@@ -4,7 +4,7 @@ var should = require('chai').should(),
 
 describe('#find', function() {
   it('finds config', function() {
-    find('package.json').should.equal(process.cwd() + "\\package.json");
+    find('package.json').should.equal(process.cwd() + "/package.json");
   });
 
   it('converts config to object with require', function() {
