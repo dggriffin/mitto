@@ -15,6 +15,7 @@ A small library that lets you search for and specify configurations that should 
 	var myconfig = find('config_i_need.json');
 
 	if (myconfig) {
+		myconfig = require(myconfig);
 		//DO STUFF
 	}
 	else {
@@ -40,6 +41,7 @@ A small library that lets you search for and specify configurations that should 
 	var packagejson = find('package.json', template);
 
 	if (packagejson) {
+		packagejson = require(packagejson);
 		//DO STUFF
 	}
 	else {
