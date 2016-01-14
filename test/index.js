@@ -27,7 +27,7 @@ describe('#find', function() {
       homepage: ""
     };
 
-   find('package.json', template).should.equal(process.cwd() + "\\package.json");
+   find('package.json', template).should.equal(process.cwd() + "/package.json");
 
   });
 });
