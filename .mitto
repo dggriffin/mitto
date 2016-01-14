@@ -1,0 +1,18 @@
+{
+	"required" : {
+		"name" : "",
+		"version" : "",
+		"description": "",
+		"main": "",
+		"scripts": {},
+		"repository": {},
+		"keywords": [],
+		"author": "",
+		"license": "",
+		"bugs" : {},
+		"homepage": ""
+	},
+	"optional" : {
+		"devDependencies" : {}
+	}
+}

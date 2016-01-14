@@ -4,31 +4,20 @@ var should = require('chai').should(),
     path = require("path");
 
 describe('#find', function() {
-  it('finds config', function() {
+  it('finds configs that exist', function() {
+    find('package.json', true).should.equal(process.cwd() + path.sep + "package.json");
+  });
+
+    it('returns empty strings for configs that do not exist', function() {
+    find('packagess.json', true).should.equal('');
+  });
+
+  it('finds config when it matches .mitto template', function() {
     find('package.json').should.equal(process.cwd() + path.sep + "package.json");
   });
 
-  it('converts config to object with require', function() {
-    var file = require(find('package.json'));
-    file.name.should.equal("mitto");
+  it('throws error when config doesnt match .mitto template', function() {
+    (function(){find('packagetest.json')}).should.throw(Error);
   });
 
-  it('finds config that matches template', function() {
-    var template = {
-      name: "",
-      version: "",
-      description: "",
-      main: "",
-      scripts: "",
-      repository: "",
-      keywords: "",
-      author: "",
-      license: "",
-      bugs: "",
-      homepage: ""
-    };
-
-   find('package.json', template).should.equal(process.cwd() + path.sep + "package.json");
-
-  });
 });
