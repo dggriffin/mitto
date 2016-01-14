@@ -1,10 +1,11 @@
 var should = require('chai').should(),
     mitto = require('../lib/index'),
-    find = mitto.find;
+    find = mitto.find,
+    path = require("path");
 
 describe('#find', function() {
   it('finds config', function() {
-    find('package.json').should.equal(process.cwd() + "/package.json");
+    find('package.json').should.equal(process.cwd() + path.sep + "package.json");
   });
 
   it('converts config to object with require', function() {
@@ -27,7 +28,7 @@ describe('#find', function() {
       homepage: ""
     };
 
-   find('package.json', template).should.equal(process.cwd() + "/package.json");
+   find('package.json', template).should.equal(process.cwd() + path.sep + "package.json");
 
   });
 });
