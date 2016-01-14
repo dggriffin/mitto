@@ -1,6 +1,6 @@
 #mitto 
 <a href="https://www.npmjs.com/package/mitto"><img alt="npm version" src="https://img.shields.io/npm/v/mitto.svg"></a><a href="https://travis-ci.org/dggriffin/mitto"><img alt="Travis Status" src="https://travis-ci.org/dggriffin/mitto.svg?branch=master"></a><a href="https://david-dm.org/dggriffin/mitto#info=dependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto.svg"></a><a href="https://david-dm.org/dggriffin/mitto#info=devDependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto/dev-status.svg"></a>
-=========
+
 
 **mitto** is a small library that helps package creators search the file directory of the application consuming them for their relevant config.
 
