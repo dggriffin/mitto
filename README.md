@@ -16,23 +16,28 @@ Package creators can even drop a `.mitto` file into their root folder and specif
 	npm install mitto --save
 
 ## Usage
+#### Using mitto as a simple file/config finder with `mitto.findConfig`
 ```javascript
 	var mitto = require('mitto')
-	find = mitto.find;
+	findConfig = mitto.findConfig;
 
-	var myConfigPath = find('config_i_need.json');
+	var myConfigPath = findConfig('config_i_need.json');
+	var myConfigObj;
 
 	if (myConfigPath) {
-		myconfig = require(myConfigPath);
+		myConfigObj = require(myConfigPath);
 		//DO STUFF
 	}
 	else {
-		//OH GOD I HAVE TO BE A PACKAGE THAT CAN CONFIGURE ITSELF
+		//YELL AT USER AND CONFIGURE THINGS MYSELF
 	}
 ```
-You can even specify properties you are expecting in a `.mitto` config file, like this:
+
+#### Using mitto for type-checked configuration expression with `mitto.findMittoConfig`
+Create a `.mitto` config file in your root folder:
 ```javascript
 {
+	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json"
 	"required" : {
 		"name" : "",
 		"version" : "",
@@ -50,6 +55,16 @@ You can even specify properties you are expecting in a `.mitto` config file, lik
 		"devDependencies" : {}
 	}
 }
+```
+Then in code:
+```javascript
+	var mitto = require('mitto')
+	findMittoConfig = mitto.findMittoConfig;
+
+	var myConfigPath = findMittoConfig();
+	var myConfigObj = require(myConfigPath);
+	
+	//DO STUFF...
 ```
 
 #### Important Notes 
@@ -69,5 +84,5 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
-* 0.2.0 Switch from object-templating to .mitto templating
+* 0.2.0 Switch from object-templating to .mitto templating, separate opinionated call from non-opiniated.
 * 0.1.0 Initial release
