@@ -1,4 +1,4 @@
-mitto
+mitto <a href="https://travis-ci.org/dggriffin/mitto"><img alt="Travis Status" src="https://travis-ci.org/dggriffin/mitto.svg?branch=master"></a>
 =========
 
 A small library that lets you search for and specify configurations that should be present in other projects when your package is used.
