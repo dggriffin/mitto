@@ -1,4 +1,5 @@
 {
+	"name": "package.json",
 	"required" : {
 		"name" : "",
 		"version" : "",

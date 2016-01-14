@@ -1,32 +1,22 @@
 import path from "path";
 import fs from "fs";
 
-let _template;
-let _filename;
+const MITTO_CONFIG = '.mitto';
+
 /**
- * Find JSON configuration given a filename and config template
+ * Find JSON configuration given a filename
  *
- * @param  {String} filename
- * @param  {bool} ignoreMittoTemplate
- * @return {String}
+ * @return {String} -- the filepath used fort require/import
  */
-export function find(filename, ignoreMittoTemplate = false) {
-    _filename = filename;
+export function findConfig(filename) {
     let cwd = process.cwd();
     let parts = cwd.split(path.sep);
-    let mittoTemplate;
-
-     //Check for explicit .mitto template, if not, oh well.
-    if (!ignoreMittoTemplate) {
-      mittoTemplate = find('.mitto', true);
-    }
-    
     do {
       let loc = parts.join(path.sep);
       if (!loc) break;
 
       let file = path.join(loc, filename);
-      if (fs.existsSync(file) && (!mittoTemplate || _matchMittoTemplate(file, mittoTemplate))) {
+      if (fs.existsSync(file)) {
         return file;
       }
 
@@ -36,25 +26,44 @@ export function find(filename, ignoreMittoTemplate = false) {
     return "";
 };
 
-let _matchMittoTemplate = (configPath, templatePath) => {
-  let config = require(configPath);
-  let mittoTemplate = loadJSON(templatePath);
+/**
+ * Find JSON configuration given .mitto configuration
+ *
+ * @return {String} -- the filepath used for require/import
+ */
 
-  for (let key in mittoTemplate.required) {
-    if (!config.hasOwnProperty(key)) {
-      throw new Error(`Required property ${key} not found in ${_filename}`);
+export function findMittoConfig() {
+  let mittoPath = findConfig(MITTO_CONFIG);
+  let mittoObj = loadJSON(mittoPath);
+  let packageObj = require(findConfig('package.json'));
+
+  let configPath = findConfig(mittoObj.name);
+  if (!configPath && Object.keys(mittoObj.required).length) {
+    throw new Error(`${mittoObj.name} configuration file not found, and is required by ${packageObj.name}`);
+  }
+  else if (!configPath) {
+    return "";
+  }
+
+  let configObj = require(configPath);
+
+  for (let key in mittoObj.required) {
+    if (!configObj.hasOwnProperty(key)) {
+      throw new Error(`Required property ${key} not found in ${mittoObj.name}`);
     }
-    else if (typeof config[key] !== typeof mittoTemplate.required[key]) {
-      throw new Error(`Required property ${key} expected to be of type ${typeof config[key]}`);
+    else if (typeof configObj[key] !== typeof mittoObj.required[key]) {
+      throw new Error(`Required property ${key} expected to be of type ${typeof configObj[key]}`);
     }
   }
 
-  for (let key in mittoTemplate.optional) {
-    if (typeof config[key] !== typeof mittoTemplate.optional[key]) {
-      throw new Error(`Optional property ${key} expected to be of type ${typeof config[key]}`);
+  for (let key in mittoObj.optional) {
+    if (typeof configObj[key] !== typeof mittoObj.optional[key]) {
+      throw new Error(`Optional property ${key} expected to be of type ${typeof configObj[key]}`);
     }
   }
-  return true;
+
+  return configPath;
+
 };
 
 let loadJSON = (file) => {
