@@ -6,11 +6,11 @@
 
 Package creators can even drop a `.mitto` file into their root folder and specify `required` and `optional` parameters with type-checking (including descriptive error messages for your package consumers if a required parameter is not present or of the wrong type).
 
-##### Reasons to use mitto
+##### Reasons to use mitto:
 * Quick and painless to start writing your package with a user-provided config in mind
 * `required` or `optional` parameter enforcement with type-checking for your configs
 * Descriptive error messages for the user when something is misconfigured
-* `.motto` gives your package consumers a common area to see what configurations are available or expected of them
+* `.mitto` gives your package consumers a common area to see what configurations are available or expected of them
 
 ## Installation
 
@@ -28,8 +28,7 @@ Package creators can even drop a `.mitto` file into their root folder and specif
 	if (myConfigPath) {
 		myConfigObj = require(myConfigPath);
 		//DO STUFF
-	}
-	else {
+	} else {
 		//YELL AT USER AND CONFIGURE THINGS MYSELF
 	}
 ```
@@ -38,7 +37,7 @@ Package creators can even drop a `.mitto` file into their root folder and specif
 Create a `.mitto` config file in your root folder:
 ```javascript
 {
-	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json"
+	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
 	"required" : {
 		"name" : "",
 		"version" : "",
@@ -59,7 +58,7 @@ Create a `.mitto` config file in your root folder:
 ```
 Then in code:
 ```javascript
-	var mitto = require('mitto')
+	var mitto = require('mitto');
 	findMittoConfig = mitto.findMittoConfig;
 
 	var myConfigPath = findMittoConfig();
@@ -69,7 +68,7 @@ Then in code:
 ```
 
 #### Important Notes 
-* Property names listed under `required` must be present and will type-checked against what the user provides.
+* Property names listed under `required` must be present and will be type-checked against what the user provides.
 
 * Property names listed under `optional` need not be present, but if they are, they will be type-checked.
 
