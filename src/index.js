@@ -12,8 +12,12 @@ const DATA_TYPES = ["undefined", "object", "boolean", "number", "string", "symbo
 export function loadConfig(filename) {
   //Does our consumer have a valid .mitto?
   let mittoObject = _loadMitto();
-  let configObject = _findFile(filename);
+  //Is it in a valid format?
+  mittoObject = _validateMitto(mittoObject);
 
+  //Does our consumer's consumer have a config of 'filename'?
+  let configObject = _findFile(filename);
+  //Is it in a valid format as prescribed by our consumer's .mitto?
   return _validateConfig(configObject, mittoObject);
 };
 
@@ -50,16 +54,15 @@ let _findFile = (filename) => {
 
 //Find package's .mitto config (if it exists), load it, and then validate it
 let _loadMitto = () => {
-  let mittoObject = _findFile(MITTO_CONFIG);
-  if (mittoObject) {
-    return _validateMitto(mittoObject);
-  }
-  return null;
+  return _findFile(MITTO_CONFIG);
 };
 
 
 //Validate .mitto object handed off to function to ensure it is syntatical correct
 let _validateMitto = (mittoObject) => {
+  if(!mittoObject){
+    return null;
+  }
 
   if (!mittoObject.hasOwnProperty("name")) {
      throw new Error(`"name" property is missing from your .mitto and is required.`);
