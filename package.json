@@ -1,6 +1,6 @@
 {
   "name": "mitto",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A small library that lets you search for and specify configurations that should be present in other projects when your package is used.",
   "main": "lib/index.js",
   "scripts": {
