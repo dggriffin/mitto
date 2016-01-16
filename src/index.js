@@ -6,8 +6,8 @@ const DATA_TYPES = ["undefined", "object", "boolean", "number", "string", "symbo
 
 /**
  * Find JSON configuration given a filename
- *
- * @return {String} -- the filepath used fort require/import
+ * Applies .mitto constraints if your package has a .mitto package present
+ * @return {json converted to Object}
  */
 export function loadConfig(filename) {
   //Does our consumer have a valid .mitto?
@@ -17,6 +17,12 @@ export function loadConfig(filename) {
   return _validateConfig(configObject, mittoObject);
 };
 
+
+/**
+  * PRIVATE HELPER FUNCTIONS
+  */
+
+//Find a "require" a JSON configuration given the filename
 let _findFile = (filename) => {
     let cwd = process.cwd();
     let parts = cwd.split(path.sep);
@@ -26,9 +32,11 @@ let _findFile = (filename) => {
 
       let file = path.join(loc, filename);
       if (fs.existsSync(file)) {
-        let fileObj = require(file);
-        if(typeof fileObj !== "object") {
-          fileObj = _loadJSON(fileObj);
+        let fileObj;
+        try {
+          fileObj = require(file);
+        } catch(e) {
+          fileObj = _loadJSON(file);
         }
         return fileObj;
       }
@@ -39,51 +47,58 @@ let _findFile = (filename) => {
     return null;
 };
 
+
+//Find package's .mitto config (if it exists), load it, and then validate it
 let _loadMitto = () => {
   let mittoObject = _findFile(MITTO_CONFIG);
-  return mittoOjbect ? _validateMitto(mittoObject) : null;
+  if (mittoObject) {
+    return _validateMitto(mittoObject);
+  }
+  return null;
 };
 
+
+//Validate .mitto object handed off to function to ensure it is syntatical correct
 let _validateMitto = (mittoObject) => {
 
   if (!mittoObject.hasOwnProperty("name")) {
-     throw new Error(`"name" property is missing from .mitto and is required.`);
+     throw new Error(`"name" property is missing from your .mitto and is required.`);
   }
 
   if (mittoObject.hasOwnProperty("required")) {
     for (let key in mittoObject.required) {
-      if (key.hasOwnProperty("type")) {
-        if (DATA_TYPES.indexOf(key.type) === -1) {
-          throw new Error(`${key.type} is not a valid data type. Expected: "undefined", "object", "boolean", "number", "string", "symbol", or "function"`);
+      if (mittoObject.required[key].hasOwnProperty("type")) {
+        if (DATA_TYPES.indexOf(mittoObject.required[key].type) === -1) {
+          throw new Error(`${mittoObject.required[key].type} is not a valid data type. Expected: "undefined", "object", "boolean", "number", "string", "symbol", or "function"`);
         }
       }
       else {
-        throw new Error(`"type" property is missing from .mitto's required parameter ${key}`);
+        throw new Error(`"type" property is missing from your .mitto's required parameter "${key}"`);
       }
 
-      if (key.hasOwnProperty("description") && typeof key.description !== "string") {
-        throw new Error(`"description" property of .mitto's required parameter ${key} must be of type "string"`);
+      if (mittoObject.required[key].hasOwnProperty("description") && typeof mittoObject.required[key].description !== "string") {
+        throw new Error(`"description" property of your .mitto's required parameter ${key} must be of type "string"`);
       }
     }
   }
 
   if (mittoObject.hasOwnProperty("optional")) {
     for (let key in mittoObject.optional) {
-      if (key.hasOwnProperty("type")) {
-        if (DATA_TYPES.indexOf(key.type) === -1) {
-          throw new Error(`${key.type} is not a valid data type. Expected: "undefined", "object", "boolean", "number", "string", "symbol", or "function"`);
+      if (mittoObject.optional[key].hasOwnProperty("type")) {
+        if (DATA_TYPES.indexOf(mittoObject.optional[key].type) === -1) {
+          throw new Error(`${mittoObject.optional[key].type} is not a valid data type. Expected: "undefined", "object", "boolean", "number", "string", "symbol", or "function"`);
         }
       }
       else {
-        throw new Error(`"type" property is missing from .mitto's optional parameter ${key}`);
+        throw new Error(`"type" property is missing from your .mitto's optional parameter ${key}`);
       }
 
-      if (key.hasOwnProperty("description") && typeof key.description !== "string") {
-        throw new Error(`"description" property of .mitto's optional parameter ${key} must be of type "string"`);
+      if (mittoObject.optional[key].hasOwnProperty("description") && typeof mittoObject.optional[key].description !== "string") {
+        throw new Error(`"description" property of your .mitto's optional parameter ${key} must be of type "string"`);
       }
 
-      if (key.hasOwnProperty("default") && typeof key.default !== key.type) {
-        throw new Error(`"default" property of .mitto's optional parameter ${key} must be a ${key.type}, as specified by "type"`);
+      if (key.hasOwnProperty("default") && typeof mittoObject.optional[key].default !== mittoObject.optional[key].type) {
+        throw new Error(`"default" property of your .mitto's optional parameter ${key} must be a ${mittoObject.optional[key].type}, as specified by "type"`);
       }
     }
   }
@@ -91,8 +106,10 @@ let _validateMitto = (mittoObject) => {
   return mittoObject;
 };
 
+
+//Validate the consuming user's present config to ensure it meets the product producer's .mitto syntatical specifications
 let _validateConfig = (configObject, mittoObject) => {
-  let packageObject = require(_findFile('package.json'));
+  let packageObject = _findFile('package.json');
   if(!mittoObject){
     return configObject;
   }
@@ -122,9 +139,11 @@ let _validateConfig = (configObject, mittoObject) => {
   return configObject;
 };
 
+
+//Convert file to JSON (used if file doesn't end in .json)
 let _loadJSON = (file) => {
   try {
-    let data = fs.readFileSync(file);
+    var data = fs.readFileSync(file);
   } catch (e) {
     throw new Error(`${file} expected to be in JSON format`);
   }
