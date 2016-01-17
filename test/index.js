@@ -74,6 +74,48 @@ describe('#validateConfig', function() {
     (function(){validateConfig(null, mittoObject)}).should.throw(Error);
   });
 
+  it('returns null if theres no configObject, and a .mitto with just "optional" parameters with no defaults', function() {
+  	var configObject = findFile('package.json');
+  	var mittoObject = {
+  		name : "hoi",
+  		optional : {
+  			partyTime: {
+  				type : 'boolean'
+  			}
+  		}
+  	};
+    expect(validateConfig(null, mittoObject)).to.equal(null);
+  });
+
+  it('returns empty object with added defaults if theres no configObject, and a .mitto with "optional" parameters with defaults', function() {
+  	var mittoObject = {
+  		hasDefault : true,
+  		name : "hoi",
+  		optional : {
+  			partyTime: {
+  				type : 'boolean',
+  				default : true
+  			}
+  		}
+  	};
+    expect(validateConfig(null, mittoObject)).to.deep.equal({partyTime: true});
+  });
+
+  it('returns config object with added defaults if theres a .mitto with "optional" parameters with defaults', function() {
+  	var configObject = findFile('package.json');
+  	var mittoObject = {
+  		hasDefault : true,
+  		name : "hoi",
+  		optional : {
+  			partyTime: {
+  				type : 'boolean',
+  				default : true
+  			}
+  		}
+  	};
+    expect(validateConfig(configObject, mittoObject).partyTime).to.equal(true);
+  });
+
   it('returns null if theres no configObject, and no .mitto', function() {
   	var configObject = findFile('package.json');
     expect(validateConfig(null, null)).to.equal(null);

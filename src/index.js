@@ -100,8 +100,11 @@ let _validateMitto = (mittoObject) => {
         throw new Error(`"description" property of your .mitto's optional parameter ${key} must be of type "string"`);
       }
 
-      if (key.hasOwnProperty("default") && typeof mittoObject.optional[key].default !== mittoObject.optional[key].type) {
+      if (mittoObject.optional[key].hasOwnProperty("default") && typeof mittoObject.optional[key].default !== mittoObject.optional[key].type) {
         throw new Error(`"default" property of your .mitto's optional parameter ${key} must be a ${mittoObject.optional[key].type}, as specified by "type"`);
+      }
+      else if (mittoObject.optional[key].hasOwnProperty("default")) {
+        mittoObject.hasDefault = true;
       }
     }
   }
@@ -117,8 +120,11 @@ let _validateConfig = (configObject, mittoObject) => {
     return configObject;
   }
 
-  if (!configObject && Object.keys(mittoObject.required).length) {
+  if (!configObject && mittoObject.required && Object.keys(mittoObject.required).length) {
     throw new Error(`${mittoObject.name} configuration file not found, and is required by ${packageObject.name}`);
+  }
+  else if (!configObject && mittoObject.hasDefault) {
+    return _addOnDefaults({}, mittoObject);
   }
   else if (!configObject) {
     return configObject;
@@ -134,14 +140,26 @@ let _validateConfig = (configObject, mittoObject) => {
   }
 
   for (let key in mittoObject.optional) {
-    if (typeof configObject[key] !== mittoObject.optional[key].type) {
-      throw new Error(`Optional property ${key} expected to be of type ${mittoObject.required[key].type}`);
+    if (configObject[key] && typeof configObject[key] !== mittoObject.optional[key].type) {
+      throw new Error(`Optional property ${key} is type ${typeof configObject[key]} and expected to be of type ${mittoObject.optional[key].type}`);
     }
+  }
+
+  if (mittoObject.hasDefault) {
+    return _addOnDefaults(configObject, mittoObject);
   }
 
   return configObject;
 };
 
+let _addOnDefaults = (configObject, mittoObject) => {
+  for (let key in mittoObject.optional) {
+    if (mittoObject.optional[key].hasOwnProperty('default')) {
+      configObject[key] = mittoObject.optional[key].default;
+    }
+  }
+  return configObject;
+};
 
 //Convert file to JSON (used if file doesn't end in .json)
 let _loadJSON = (file) => {
