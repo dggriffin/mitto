@@ -17,62 +17,59 @@ Package creators can even drop a `.mitto` file into their root folder and specif
 	npm install mitto --save
 
 ## Usage
-#### Using mitto as a simple file/config finder with `mitto.findConfig`
+#### Using mitto as a simple file/config finder without a `.mitto` file
 ```javascript
-	var mitto = require('mitto')
-	findConfig = mitto.findConfig;
+	var mitto = require('mitto');
 
-	var myConfigPath = findConfig('config_i_need.json');
-	var myConfigObj;
+	var myConfig = mitto.loadConfig('config_i_need.json');
 
-	if (myConfigPath) {
-		myConfigObj = require(myConfigPath);
+	if (myConfig) {
 		//DO STUFF
 	} else {
 		//YELL AT USER AND CONFIGURE THINGS MYSELF
 	}
 ```
 
-#### Using mitto for type-checked configuration expression with `mitto.findMittoConfig`
+#### Using mitto for type-checked configuration expression with a `.mitto` file
 Create a `.mitto` config file in your root folder:
 ```javascript
 {
 	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
 	"required" : {
-		"name" : "",
-		"version" : "",
-		"description": "",
-		"main": "",
-		"scripts": {},
-		"repository": {},
-		"keywords": [],
-		"author": "",
-		"license": "",
-		"bugs" : {},
-		"homepage": ""
+		"areWeHavingFun" : {
+			"type" : "boolean",   //valid types: "undefined", "object", "boolean", "number", "string", "symbol", "function"
+			"description" : "boolean that represents if we're having fun" // **Optional**, you don't have to include "description"
+		},
+		"maximumBeerCount" : {
+			"type" : "number"
+		} 
 	},
 	"optional" : {
-		"devDependencies" : {}
+		"partyResponsibly" : {
+			"type" : "boolean",
+			"description" : "boolean indiciating if we should party responsibly",
+			"default" : false // **Optional**, this controls the default value this is initialized to if the user doesn't provide this field, or doesn't have a configuration at all
+		}
 	}
 }
 ```
-Then in code:
+The code we write will be the exact same, except anything we get from the user will be compared with your .mitto and type-checked:
 ```javascript
 	var mitto = require('mitto');
-	findMittoConfig = mitto.findMittoConfig;
 
-	var myConfigPath = findMittoConfig();
-	var myConfigObj = require(myConfigPath);
-	
-	//DO STUFF...
+	var myConfig = mitto.loadConfig('config_i_need.json');
+
+	if (myConfig) {
+		//DO STUFF
+	} else {
+		//CONFIGURE THINGS MYSELF
+	}
 ```
 
 #### Important Notes 
-* Property names listed under `required` must be present and will be type-checked against what the user provides.
-
-* Property names listed under `optional` need not be present, but if they are, they will be type-checked.
-
-* If no property names are listed under `required`, the user will *not* be thrown an error when attempting to use your npm package.
+* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES NOT* have a configuration present, they will be thrown an error, stating they are missing a configuration of the name you specified
+* If *DO* have a `.mitto` *WITH OUT* `required` attributes, and the user *DOES NOT* have a configuration present, they will not be thrown an error, and you will be returned either NULL or an object with your defaults
+* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES* have a configuration present, they will be thrown an error if they are missing a required parameter, or have a parameter of an invalid type
 
 ## Tests
 
