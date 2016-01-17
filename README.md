@@ -81,5 +81,6 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 Add unit tests for any new or changed functionality. Lint and test your code.
 
 ## Release History
+* 0.3.0 Unified API under loadConfig. mitto now "requires" the object for you. `.mitto` is now more explicit and detailed.
 * 0.2.0 Switch from object-templating to .mitto templating, separate opinionated call from non-opiniated.
 * 0.1.0 Initial release
