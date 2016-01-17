@@ -2,78 +2,82 @@
 <a href="https://www.npmjs.com/package/mitto"><img alt="npm version" src="https://img.shields.io/npm/v/mitto.svg"></a><a href="https://travis-ci.org/dggriffin/mitto"><img alt="Travis Status" src="https://travis-ci.org/dggriffin/mitto.svg?branch=master"></a><a href="https://david-dm.org/dggriffin/mitto#info=dependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto.svg"></a><a href="https://david-dm.org/dggriffin/mitto#info=devDependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto/dev-status.svg"></a>
 
 
-**mitto** is a small library that helps package creators search the file directory of the application consuming them for their relevant config.
+**mitto** is a small library that helps package creators search the file directory of the application consuming their package for its relevant config.
 
-Package creators can even drop a `.mitto` file into their root folder and specify `required` and `optional` parameters with type-checking (including descriptive error messages for your package consumers if a required parameter is not present or of the wrong type).
+Package creators can even drop a `.mitto` file into their root folder and specify `required` and `optional` parameters with type-checking (including descriptive error messages for package consumers if a required parameter is not present or is of the wrong type).
 
 ##### Reasons to use mitto:
 * Quick and painless to start writing your package with a user-provided config in mind
 * `required` or `optional` parameter enforcement with type-checking for your configs
 * Descriptive error messages for the user when something is misconfigured
-* `.mitto` gives your package consumers a common area to see what configurations are available or expected of them
+* `.mitto` gives your package consumers a common area to see what configurations are available and/or expected
 
 ## Installation
 
-	npm install mitto --save
+    npm install mitto --save
 
 ## Usage
 #### Using mitto as a simple file/config finder without a `.mitto` file
 ```javascript
-	var mitto = require('mitto');
+    var mitto = require('mitto');
 
-	var myConfig = mitto.loadConfig('config_i_need.json');
+    var myConfig = mitto.loadConfig('config_i_need.json');
 
-	if (myConfig) {
-		//DO STUFF
-	} else {
-		//YELL AT USER AND CONFIGURE THINGS MYSELF
-	}
+    if (myConfig) {
+        //DO STUFF
+    } else {
+        //YELL AT USER AND CONFIGURE THINGS MYSELF
+    }
 ```
 
 #### Using mitto for type-checked configuration expression with a `.mitto` file
 Create a `.mitto` config file in your root folder:
 ```javascript
 {
-	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
-	"required" : {
-		"areWeHavingFun" : {
-			"type" : "boolean",   //valid types: "undefined", "object", "boolean", "number", "string", "symbol", "function"
-			"description" : "boolean that represents if we're having fun" // **Optional**, you don't have to include "description"
-		},
-		"maximumBeerCount" : {
-			"type" : "number"
-		} 
-	},
-	"optional" : {
-		"partyResponsibly" : {
-			"type" : "boolean",
-			"description" : "boolean indiciating if we should party responsibly",
-			"default" : false // **Optional**, this controls the default value this is initialized to if the user doesn't provide this field, or doesn't have a configuration at all
-		}
-	}
+    "name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
+    "required" : {
+        "areWeHavingFun" : {
+            "type" : "boolean",   //valid types: "undefined", "object", "boolean", "number", "string", "symbol", "function"
+            "description" : "boolean that represents if we're having fun" // **Optional**, you don't have to include "description"
+        },
+        "maximumBeerCount" : {
+            "type" : "number"
+        } 
+    },
+    "optional" : {
+        "partyResponsibly" : {
+            "type" : "boolean",
+            "description" : "boolean indicating if we should party responsibly",
+            "default" : false // **Optional**, the default value if the user doesn't provide a value or doesn't have a configuration at all
+        }
+    }
 }
 ```
-The code we write will be the exact same, except anything we get from the user will be compared with your .mitto and type-checked:
+The code we write will be exactly the same, except anything we get from the user will be compared with your `.mitto` and type-checked:
 ```javascript
-	var mitto = require('mitto');
+    var mitto = require('mitto');
 
-	var myConfig = mitto.loadConfig('config_i_need.json');
+    var myConfig = mitto.loadConfig('config_i_need.json');
 
-	if (myConfig) {
-		//DO STUFF
-	} else {
-		//CONFIGURE THINGS MYSELF
-	}
+    if (myConfig) {
+        //DO STUFF
+    } else {
+        //CONFIGURE THINGS MYSELF
+    }
 ```
 
-#### Important Notes 
-* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES NOT* have a configuration present, they will be thrown an error, stating they are missing a configuration of the name you specified
-* If *DO* have a `.mitto` *WITH OUT* `required` attributes, and the user *DOES NOT* have a configuration present, they will not be thrown an error, and you will be returned either NULL or an object with your defaults
-* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES* have a configuration present, they will be thrown an error if they are missing a required parameter, or have a parameter of an invalid type
+#### Error Handling
+
+`.mitto` has `required` attributes? | User has a configuration file? | Error handling behavior
+:---------------------------------: | :----------------------------: | :----------------------
+Yes                                 | Yes                            | Only throws errors if user is missing a required parameter or has a parameter of an invalid type.
+Yes                                 | No                             | Throws an error that the configuration is missing.
+No                                  | Yes                            | Does not throw errors. `loadConfig()` will return NULL or an object with defaults.
+No                                  | No                             | Does not throw errors. `loadConfig()` will return NULL or an object with defaults.
 
 ## Tests
 
-	npm test
+    npm test
 
 ## Contributing
 
