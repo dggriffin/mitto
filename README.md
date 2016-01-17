@@ -71,8 +71,9 @@ The code we write will be exactly the same, except anything we get from the user
 `.mitto` has `required` attributes? | User has a configuration file? | Error handling behavior
 ----------------------------------- | ------------------------------ | -----------------------
 Yes                                 | Yes                            | Only throws errors if user is missing a required parameter or has a parameter of an invalid type.
-No                                  | No                             | Does not throw errors. `loadConfig()` will return NULL or an object with defaults.
 Yes                                 | No                             | Throws an error that the configuration is missing.
+No                                  | Yes                            | Does not throw errors. `loadConfig()` will return NULL or an object with defaults.
+No                                  | No                             | Does not throw errors. `loadConfig()` will return NULL or an object with defaults.
 
 ## Tests
 
