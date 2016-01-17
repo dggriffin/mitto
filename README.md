@@ -2,15 +2,15 @@
 <a href="https://www.npmjs.com/package/mitto"><img alt="npm version" src="https://img.shields.io/npm/v/mitto.svg"></a><a href="https://travis-ci.org/dggriffin/mitto"><img alt="Travis Status" src="https://travis-ci.org/dggriffin/mitto.svg?branch=master"></a><a href="https://david-dm.org/dggriffin/mitto#info=dependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto.svg"></a><a href="https://david-dm.org/dggriffin/mitto#info=devDependencies&view=table"><img alt="Travis Status" src="https://david-dm.org/dggriffin/mitto/dev-status.svg"></a>
 
 
-**mitto** is a small library that helps package creators search the file directory of the application consuming them for their relevant config.
+**mitto** is a small library that helps package creators search the file directory of the application consuming their package for its relevant config.
 
-Package creators can even drop a `.mitto` file into their root folder and specify `required` and `optional` parameters with type-checking (including descriptive error messages for your package consumers if a required parameter is not present or of the wrong type).
+Package creators can even drop a `.mitto` file into their root folder and specify `required` and `optional` parameters with type-checking (including descriptive error messages for package consumers if a required parameter is not present or is of the wrong type).
 
 ##### Reasons to use mitto:
 * Quick and painless to start writing your package with a user-provided config in mind
 * `required` or `optional` parameter enforcement with type-checking for your configs
 * Descriptive error messages for the user when something is misconfigured
-* `.mitto` gives your package consumers a common area to see what configurations are available or expected of them
+* `.mitto` gives your package consumers a common area to see what configurations are available and/or expected
 
 ## Installation
 
@@ -47,13 +47,13 @@ Create a `.mitto` config file in your root folder:
     "optional" : {
         "partyResponsibly" : {
             "type" : "boolean",
-            "description" : "boolean indiciating if we should party responsibly",
-            "default" : false // **Optional**, this controls the default value this is initialized to if the user doesn't provide this field, or doesn't have a configuration at all
+            "description" : "boolean indicating if we should party responsibly",
+            "default" : false // **Optional**, the default value if the user doesn't provide a value or doesn't have a configuration at all
         }
     }
 }
 ```
-The code we write will be the exact same, except anything we get from the user will be compared with your .mitto and type-checked:
+The code we write will be exactly the same, except anything we get from the user will be compared with your `.mitto` and type-checked:
 ```javascript
     var mitto = require('mitto');
 
