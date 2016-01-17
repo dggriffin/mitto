@@ -14,56 +14,56 @@ Package creators can even drop a `.mitto` file into their root folder and specif
 
 ## Installation
 
-	npm install mitto --save
+    npm install mitto --save
 
 ## Usage
 #### Using mitto as a simple file/config finder without a `.mitto` file
 ```javascript
-	var mitto = require('mitto');
+    var mitto = require('mitto');
 
-	var myConfig = mitto.loadConfig('config_i_need.json');
+    var myConfig = mitto.loadConfig('config_i_need.json');
 
-	if (myConfig) {
-		//DO STUFF
-	} else {
-		//YELL AT USER AND CONFIGURE THINGS MYSELF
-	}
+    if (myConfig) {
+        //DO STUFF
+    } else {
+        //YELL AT USER AND CONFIGURE THINGS MYSELF
+    }
 ```
 
 #### Using mitto for type-checked configuration expression with a `.mitto` file
 Create a `.mitto` config file in your root folder:
 ```javascript
 {
-	"name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
-	"required" : {
-		"areWeHavingFun" : {
-			"type" : "boolean",   //valid types: "undefined", "object", "boolean", "number", "string", "symbol", "function"
-			"description" : "boolean that represents if we're having fun" // **Optional**, you don't have to include "description"
-		},
-		"maximumBeerCount" : {
-			"type" : "number"
-		} 
-	},
-	"optional" : {
-		"partyResponsibly" : {
-			"type" : "boolean",
-			"description" : "boolean indiciating if we should party responsibly",
-			"default" : false // **Optional**, this controls the default value this is initialized to if the user doesn't provide this field, or doesn't have a configuration at all
-		}
-	}
+    "name" : "name_of_the_config_file_you_expect_the_user_to_provide.json",
+    "required" : {
+        "areWeHavingFun" : {
+            "type" : "boolean",   //valid types: "undefined", "object", "boolean", "number", "string", "symbol", "function"
+            "description" : "boolean that represents if we're having fun" // **Optional**, you don't have to include "description"
+        },
+        "maximumBeerCount" : {
+            "type" : "number"
+        } 
+    },
+    "optional" : {
+        "partyResponsibly" : {
+            "type" : "boolean",
+            "description" : "boolean indiciating if we should party responsibly",
+            "default" : false // **Optional**, this controls the default value this is initialized to if the user doesn't provide this field, or doesn't have a configuration at all
+        }
+    }
 }
 ```
 The code we write will be the exact same, except anything we get from the user will be compared with your .mitto and type-checked:
 ```javascript
-	var mitto = require('mitto');
+    var mitto = require('mitto');
 
-	var myConfig = mitto.loadConfig('config_i_need.json');
+    var myConfig = mitto.loadConfig('config_i_need.json');
 
-	if (myConfig) {
-		//DO STUFF
-	} else {
-		//CONFIGURE THINGS MYSELF
-	}
+    if (myConfig) {
+        //DO STUFF
+    } else {
+        //CONFIGURE THINGS MYSELF
+    }
 ```
 
 #### Important Notes 
@@ -73,7 +73,7 @@ The code we write will be the exact same, except anything we get from the user w
 
 ## Tests
 
-	npm test
+    npm test
 
 ## Contributing
 
