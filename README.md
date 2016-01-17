@@ -67,9 +67,12 @@ The code we write will be exactly the same, except anything we get from the user
 ```
 
 #### Important Notes 
-* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES NOT* have a configuration present, they will be thrown an error, stating they are missing a configuration of the name you specified
-* If *DO* have a `.mitto` *WITH OUT* `required` attributes, and the user *DOES NOT* have a configuration present, they will not be thrown an error, and you will be returned either NULL or an object with your defaults
-* If *DO* have a `.mitto` *WITH* `required` attributes, and the user *DOES* have a configuration present, they will be thrown an error if they are missing a required parameter, or have a parameter of an invalid type
+
+`.mitto` has `required` attributes? | User has a configuration file? | Error throwing behavior
+----------------------------------- | ------------------------------ | -----------------------
+Yes                                 | Yes                            | Only throws errors if user is missing a required parameter or has a parameter of an invalid type
+No                                  | No                             | Does not throw errors. `loadConfig` will return NULL or an object with defaults
+Yes                                 | No                             | Throws error about the missing configuration
 
 ## Tests
 
