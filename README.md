@@ -91,4 +91,4 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 
 ## License
-MIT 
+MIT License 
